@@ -33,91 +33,97 @@ class ActiveCallScreen extends ConsumerWidget {
       body: SafeArea(
         child: Padding(
           padding: EdgeInsetsGeometry.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.teal,
-                  border: Border.all(color: AppColors.accent, width: 2),
+          child: Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.teal,
+                    border: Border.all(color: AppColors.accent, width: 2),
+                  ),
+                  child: const Icon(
+                    Icons.person,
+                    size: 52,
+                    color: Colors.white,
+                  ),
                 ),
-                child: const Icon(Icons.person, size: 52, color: Colors.white),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                call.callerId,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.w700,
+                const SizedBox(height: 20),
+                Text(
+                  call.callerId,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 28,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 4),
-              CallStatusBadge(state: call.state),
-              SizedBox(height: 20),
-              Text(
-                connected
-                    ? _formatDuration(session.connectedDuration)
-                    : '00:00',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 36,
-                  fontWeight: FontWeight.w300,
-                  fontFeatures: [FontFeature.tabularFigures()],
+                const SizedBox(height: 4),
+                CallStatusBadge(state: call.state),
+                SizedBox(height: 20),
+                Text(
+                  connected
+                      ? _formatDuration(session.connectedDuration)
+                      : '00:00',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 36,
+                    fontWeight: FontWeight.w300,
+                    fontFeatures: [FontFeature.tabularFigures()],
+                  ),
                 ),
-              ),
-              SizedBox(height: 12),
-              Text(
-                call.callId,
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.45),
-                  fontSize: 11,
+                SizedBox(height: 12),
+                Text(
+                  call.callId,
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.45),
+                    fontSize: 11,
+                  ),
                 ),
-              ),
-              SizedBox(height: 30),
-              StatusRow(current: call.state),
+                SizedBox(height: 30),
+                StatusRow(current: call.state),
 
-              const Spacer(),
-              if (ringing)
-                Row(
-                  children: [
-                    Expanded(
-                      child: roundAction(
-                        color: AppColors.danger,
-                        icon: Icons.call_end,
-                        label: 'Reject',
-                        onTap: controller.rejectCall,
+                const Spacer(),
+                if (ringing)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: roundAction(
+                          color: AppColors.danger,
+                          icon: Icons.call_end,
+                          label: 'Reject',
+                          onTap: controller.rejectCall,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 28),
-                    Expanded(
-                      child: roundAction(
-                        color: AppColors.success,
-                        icon: Icons.call,
-                        label: 'Accept',
-                        onTap: controller.acceptCall,
+                      const SizedBox(width: 28),
+                      Expanded(
+                        child: roundAction(
+                          color: AppColors.success,
+                          icon: Icons.call,
+                          label: 'Accept',
+                          onTap: controller.acceptCall,
+                        ),
                       ),
-                    ),
-                  ],
-                )
-              else if (inProgress &&
-                  (connected ||
-                      call.state == CallState.accepting ||
-                      call.state == CallState.ending))
-                roundAction(
-                  color: AppColors.danger,
-                  icon: Icons.call_end,
-                  label: 'End call',
-                  onTap: controller.endCall,
-                )
-              else
-                ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Back to home'),
-                ),
-            ],
+                    ],
+                  )
+                else if (inProgress &&
+                    (connected ||
+                        call.state == CallState.accepting ||
+                        call.state == CallState.ending))
+                  roundAction(
+                    color: AppColors.danger,
+                    icon: Icons.call_end,
+                    label: 'End call',
+                    onTap: controller.endCall,
+                  )
+                else
+                  ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Back to home'),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
