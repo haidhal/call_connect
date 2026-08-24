@@ -103,7 +103,10 @@ class CallController extends Notifier<CallSessionState> {
   }
 
   Future<void> _handleIncoming(CallEvent event) async {
-    log('HANDLE INCOMING STARTED');
+    log('========== HANDLE INCOMING ==========');
+    log('callId: ${event.callId}');
+    log('callerId: ${event.callerId}');
+    log('calleeId: ${event.calleeId}');
     final callId = event.callId;
     final callerId = event.callerId;
     final calleeId = event.calleeId;
@@ -116,8 +119,9 @@ class CallController extends Notifier<CallSessionState> {
       return;
     }
 
-    // Idempotency: one DB row per call_id.
+    log('1. BEFORE getById');
     final existing = await repo.getById(callId);
+    log('2. AFTER getById: $existing');
     if (existing != null) {
       state = state.copyWith(
         activeCall: existing.state.isActive ? existing : state.activeCall,
@@ -127,8 +131,9 @@ class CallController extends Notifier<CallSessionState> {
       return;
     }
 
-    // Only one active call at a time for this demo.
+    log('3. BEFORE getActiveCall');
     final active = await repo.getActiveCall();
+    log('4. AFTER getActiveCall: $active');
     if (active != null) {
       state = state.copyWith(
         lastMessage:
@@ -146,7 +151,7 @@ class CallController extends Notifier<CallSessionState> {
       createdAt: now,
       updatedAt: now,
     );
-
+    log('5. BEFORE insert');
     final inserted = await repo.insertIfAbsent(call);
     log('CALL INSERTED: $inserted');
     if (!inserted) {
@@ -154,7 +159,6 @@ class CallController extends Notifier<CallSessionState> {
       return;
     }
 
-    // One CallKit prompt per call_id.
     if (!_callKitPrompted.contains(callId)) {
       _callKitPrompted.add(callId);
       await callKit.showIncomingCall(callId: callId, callerName: callerId);
@@ -179,7 +183,6 @@ class CallController extends Notifier<CallSessionState> {
       state = state.copyWith(lastMessage: 'Unknown call_id on cancel: $callId');
       return;
     }
-    // Only valid from RINGING / ACCEPTING (state machine enforces).
     final updated = await _transition(
       callId,
       CallState.cancelled,

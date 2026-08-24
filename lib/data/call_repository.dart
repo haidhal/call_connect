@@ -97,8 +97,5 @@ class CallRepository {
     return updated;
   }
 
-  Future<void> clearAll() async {
-    final db = await _db;
-    await db.delete('calls');
-  }
+ 
 }

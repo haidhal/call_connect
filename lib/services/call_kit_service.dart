@@ -17,7 +17,6 @@ abstract class CallKitService {
   });
 
   Future<void> endCall(String callId);
-  Future<void> endAll();
 }
 
 enum CallKitActionType { accept, decline, timeout, ended }
@@ -53,17 +52,16 @@ class MockCallKitService implements CallKitService {
     debugPrint('[MockCallKit] endCall $callId');
   }
 
-  @override
-  Future<void> endAll() async {
-    debugPrint('[MockCallKit] endAll');
-  }
-
   void simulateAccept(String callId) {
-    _controller.add(CallKitAction(type: CallKitActionType.accept, callId: callId));
+    _controller.add(
+      CallKitAction(type: CallKitActionType.accept, callId: callId),
+    );
   }
 
   void simulateDecline(String callId) {
-    _controller.add(CallKitAction(type: CallKitActionType.decline, callId: callId));
+    _controller.add(
+      CallKitAction(type: CallKitActionType.decline, callId: callId),
+    );
   }
 
   void dispose() {
@@ -167,12 +165,6 @@ class MobileCallKitService implements CallKitService {
   Future<void> endCall(String callId) async {
     _shown.remove(callId);
     await FlutterCallkitIncoming.endCall(callId);
-  }
-
-  @override
-  Future<void> endAll() async {
-    _shown.clear();
-    await FlutterCallkitIncoming.endAllCalls();
   }
 
   void dispose() {
